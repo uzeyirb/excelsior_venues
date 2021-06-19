@@ -3,13 +3,12 @@ package com.techelevator.model;
 import java.util.List;
 
 public class Venue {
-    private Long id;
+    private Long venueId;
     private String name;
-    private Long cityId;
     private String description;
     private String cityName;
     private String state;
-    private List <String> category;
+    private List <String> categoryList;
 
     public String getCityName() {
         return cityName;
@@ -27,12 +26,12 @@ public class Venue {
         this.state = state;
     }
 
-    public Long getId() {
-        return id;
+    public Long getVenueId() {
+        return venueId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setVenueId(Long venueId) {
+        this.venueId = venueId;
     }
 
     public String getName() {
@@ -43,14 +42,6 @@ public class Venue {
         this.name = name;
     }
 
-    public Long getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Long cityId) {
-        this.cityId = cityId;
-    }
-
     public String getDescription() {
         return this.description;
     }
@@ -59,12 +50,12 @@ public class Venue {
         this.description = description;
     }
 
-    public List<String> getCategory() {
-        return category;
+    public List<String> getCategoryList() {
+        return categoryList;
     }
 
-    public void setCategory(List<String> category) {
-        this.category = category;
+    public void setCategoryList(List<String> categoryList) {
+        this.categoryList = categoryList;
     }
 
     public String toString(){

@@ -1,8 +1,8 @@
 package com.techelevator;
 
 import com.techelevator.model.Venue;
-import com.techelevator.model.VenueDAO;
-import com.techelevator.model.jdbc.JDBCVenueDAO;
+import com.techelevator.dao.VenueDAO;
+import com.techelevator.dao.impl.JDBCVenueDAO;
 import org.junit.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -75,7 +75,7 @@ public class JDBCVenueDAOIntegrationTesting {
 
     @Test
 
-    public void retrieve_Multiple_Venues() {
+    public void retrieve_multiple_venues() {
 
         // ARRANGE: Insert dummy data using either the DAO or the JdbcTemplate
         int expectedVenue = jdbcVenueDAO.getAllVenues().size() + 1;
@@ -95,6 +95,30 @@ public class JDBCVenueDAOIntegrationTesting {
 
     }
 
+    @Test
+
+    public void retrieve_venue_details() {
+
+        // Get current Venues in database
+        SqlRowSet expectedRows = jdbcTemplate.queryForRowSet("SELECT id, name, description FROM venue");
+
+        // For all venues
+        while(expectedRows.next()){
+
+            // set up expected Venue details
+            Venue expectedVenue = new Venue();
+            expectedVenue.setVenueId(expectedRows.getLong("id"));
+            expectedVenue.setName(expectedRows.getString("name"));
+            expectedVenue.setDescription(expectedRows.getString("description"));
+
+            // retrieve actual venue details through getVenue method
+            Venue actualVenue = jdbcVenueDAO.getVenue(expectedVenue.getVenueId());
+
+            // Assert equality
+            AssertVenuesEqual(expectedVenue, actualVenue);
+        }
+    }
+
     /*
     INSERT INTO venue (id, name, city_id, description) VALUES (default, 'test', 3, 'test');
      */
@@ -103,6 +127,16 @@ public class JDBCVenueDAOIntegrationTesting {
         String sql = "INSERT INTO venue (id, name, city_id, description) VALUES (default, ?, ?, ?)";
         jdbcTemplate.update(sql, name, city_id, description);
 
+    }
+
+    private void AssertVenuesEqual(Venue expectedVenue, Venue actualVenue){
+
+        Assert.assertEquals("Venue ID did not return expected value when using getVenue for " +
+                expectedVenue.getName(), expectedVenue.getVenueId(), actualVenue.getVenueId());
+        Assert.assertEquals("Venue Name did not return expected value when using getVenue",
+                expectedVenue.getName(), actualVenue.getName());
+        Assert.assertEquals("Venue Description did not return expected value when using getVenue for " +
+                expectedVenue.getName(), expectedVenue.getDescription(), actualVenue.getDescription());
     }
 
 }
